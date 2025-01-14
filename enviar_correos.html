@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Correos</title>
+    <!-- Usar el SDK actualizado de EmailJS v3 -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3.1.0/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            background: white;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        input, textarea, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Enviar Correos Masivamente</h2>
+        <form id="emailForm">
+            <label for="recipients">Correos (separados por comas):</label>
+            <input type="text" id="recipients" placeholder="correo1@gmail.com, correo2@gmail.com" required>
+
+            <label for="subject">Asunto:</label>
+            <input type="text" id="subject" placeholder="Asunto del correo" required>
+
+            <label for="message">Mensaje:</label>
+            <textarea id="message" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
+
+            <button type="submit">Enviar Correos</button>
+        </form>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        // Inicializa EmailJS con tu Public Key
+        emailjs.init("O78MKMMVfvat57KF5"); // Tu Public Key
+
+        // Maneja el formulario
+        document.getElementById("emailForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evita que la página se recargue
+
+            // Obtén los valores del formulario
+            const recipients = document.getElementById("recipients").value.split(",");
+            const subject = document.getElementById("subject").value;
+            const message = document.getElementById("message").value;
+
+            // Muestra un mensaje de "Enviando..."
+            const statusElement = document.getElementById("status");
+            statusElement.textContent = "Enviando correos...";
+            statusElement.style.color = "blue";
+
+            // Enviar correos uno por uno
+            recipients.forEach((recipient) => {
+                const templateParams = {
+                    to_email: recipient.trim(), // Se envía dinámicamente a cada destinatario
+                    subject: subject,
+                    message: message,
+                };
+
+                emailjs.send("service_rqjxerh", "template_9lpy87m", templateParams)
+                    .then(() => {
+                        statusElement.textContent = "¡Correos enviados con éxito!";
+                        statusElement.style.color = "green";
+                    })
+                    .catch((error) => {
+                        statusElement.textContent = `Error al enviar correos: ${error.text}`;
+                        statusElement.style.color = "red";
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
