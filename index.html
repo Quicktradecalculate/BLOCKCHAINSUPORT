@@ -59,8 +59,14 @@
             statusElement.textContent = "Enviando correos...";
             statusElement.style.color = "blue";
             let emailsSent = 0, errors = 0;
-            recipients.forEach((recipient) => {
-                const emailTrimmed = recipient.trim();
+
+            function sendEmail(index) {
+                if (index >= recipients.length) {
+                    statusElement.textContent = `Proceso finalizado: ${emailsSent} enviados, ${errors} errores.`;
+                    statusElement.style.color = errors === 0 ? "green" : "red";
+                    return;
+                }
+                const emailTrimmed = recipients[index].trim();
                 if (emailTrimmed) {
                     const templateParams = {
                         to_email: emailTrimmed,
@@ -70,20 +76,18 @@
                     emailjs.send("service_qwk48fy", "template_cizpv7g", templateParams)
                         .then(() => {
                             emailsSent++;
-                            if (emailsSent + errors === recipients.length) {
-                                statusElement.textContent = `¡Se enviaron ${emailsSent} correos con éxito!`;
-                                statusElement.style.color = "green";
-                            }
                         })
                         .catch(() => {
                             errors++;
-                            if (emailsSent + errors === recipients.length) {
-                                statusElement.textContent = `Error en algunos correos: ${errors} fallidos.`;
-                                statusElement.style.color = "red";
-                            }
+                        })
+                        .finally(() => {
+                            setTimeout(() => sendEmail(index + 1), 1000);
                         });
+                } else {
+                    sendEmail(index + 1);
                 }
-            });
+            }
+            sendEmail(0);
         });
     </script>
 </body>
